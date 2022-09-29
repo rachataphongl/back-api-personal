@@ -1,10 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-  const IngredientMenu = sequelize.define('IngredientMenu', {
-    ingredientItem: {
-      type: DataTypes.INTEGER
+  const IngredientMenu = sequelize.define(
+    'IngredientMenu',
+    {
+      ingredientItem: {
+        type: DataTypes.INTEGER
+      },
+      amount: {
+        type: DataTypes.STRING
+      }
     },
-    amount: {
-      type: DataTypes.STRING
-    }
-  });
+    { underscored: true }
+  );
 };
