@@ -20,21 +20,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       phoneNumber: {
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
       },
       email: {
         type: DataTypes.STRING,
-        allowNUll: true,
+        allowNull: true,
         unique: true,
         validate: {
           isEmail: true
         }
       },
       role: {
-        type: DataTypes.ENUM('Customer', 'Admin'),
-        allowNull: false
+        type: DataTypes.ENUM('customer', 'rider'),
+        defaultValue: 'customer'
       },
       password: {
         type: DataTypes.STRING,
@@ -43,6 +43,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     { underscored: true }
   );
+
+  User.associate = (db) => {
+    User.hasMany(db.Order, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      }
+    });
+
+    User.hasMany(db.Cart, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      }
+    });
+  };
 
   return User;
 };

@@ -19,5 +19,21 @@ module.exports = (sequelize, DataTypes) => {
     { underscored: true }
   );
 
+  Order.associate = (db) => {
+    Order.belongsTo(db.User, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      }
+    });
+
+    Order.hasMany(db.OrderItem, {
+      foreignKey: {
+        name: 'orderId',
+        allowNull: false
+      }
+    });
+  };
+
   return Order;
 };

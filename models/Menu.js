@@ -21,5 +21,28 @@ module.exports = (sequelize, DataTypes) => {
     { underscored: true }
   );
 
+  Menu.associate = (db) => {
+    Menu.hasMany(db.OrderItem, {
+      foreignKey: {
+        name: 'menuId',
+        allowNull: false
+      }
+    });
+
+    Menu.hasMany(db.Cart, {
+      foreignKey: {
+        name: 'menuId',
+        allowNull: false
+      }
+    });
+
+    Menu.belongsTo(db.IngredientList, {
+      foreignKey: {
+        name: 'ingredientListId',
+        allowNull: false
+      }
+    });
+  };
+
   return Menu;
 };

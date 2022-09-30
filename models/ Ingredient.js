@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Stored = sequelize.define(
-    'Stored',
+  const Ingredient = sequelize.define(
+    'Ingredient',
     {
       name: {
         type: DataTypes.STRING,
@@ -15,5 +15,14 @@ module.exports = (sequelize, DataTypes) => {
     { underscored: true }
   );
 
-  return Stored;
+  Ingredient.associate = (db) => {
+    Ingredient.hasMany(db.IngredientList, {
+      foreignKey: {
+        name: 'ingredientId',
+        allowNull: false
+      }
+    });
+  };
+
+  return Ingredient;
 };
