@@ -36,12 +36,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
 
-    Menu.belongsTo(db.IngredientList, {
-      foreignKey: {
-        name: 'ingredientListId',
-        allowNull: false
-      }
-    });
+    // Menu.belongsTo(db.IngredientList, {
+    //   foreignKey: {
+    //     name: 'ingredientListId',
+    //     allowNull: false
+    //   }
+    // });
   };
 
   return Menu;

@@ -6,10 +6,12 @@ const { User } = require('../models');
 const { Op } = require('sequelize');
 // const Op = require('Sequelize').Op;
 
-const genToken = (payload) =>
-  jwt.sign(payload, process.env.SECRET_KEY || 'key', {
+const genToken = (payload) => {
+  // console.log(payload);
+  return jwt.sign(payload, process.env.JWT_SECRET_KEY || 'key', {
     expiresIn: process.env.JWT_EXPIRES || '2d'
   });
+};
 
 exports.register = async (req, res, next) => {
   try {
@@ -91,10 +93,10 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { phoneNumberOrEmail, password } = req.body;
-    console.log(
-      phoneNumberOrEmail,
-      password + '*********************************'
-    );
+    // console.log(
+    //   phoneNumberOrEmail,
+    //   password + '*********************************'
+    // );
     const user = await User.findOne({
       where: {
         [Op.or]: [
@@ -103,20 +105,25 @@ exports.login = async (req, res, next) => {
         ]
       }
     });
-    console.log(user + '**********************');
-
-    if (!user) {
-      throw new AppError('email address or mobile phone is invalid', 400);
-    }
+    // console.log(user);
 
     const isCorrect = await bcrypt.compare(password, user.password);
     if (!isCorrect) {
       throw new AppError('email address or mobile phone is invalid', 400);
     }
 
-    const token = genToken({ id: user.id });
-    res.status(200).json({ token });
+    const token = genToken({
+      id: user.id,
+      role: user.role
+    });
+    // console.log(token);
+    // res.status(200).json({ token: token, role: user.role }); don't save
+    res.status(200).json({ token }); // res token to font-end and decode ********
   } catch (err) {
     next(err);
   }
+};
+
+exports.getMe = (req, res, next) => {
+  res.status(200).json({ user: req.user });
 };

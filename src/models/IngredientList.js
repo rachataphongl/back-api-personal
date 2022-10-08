@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   IngredientList.associate = (db) => {
-    IngredientList.hasMany(db.Menu, {
-      foreignKey: {
-        name: 'ingredientListId',
-        allowNull: false
-      }
-    });
+    // IngredientList.hasMany(db.Menu, {
+    //   foreignKey: {
+    //     name: 'ingredientListId',
+    //     allowNull: false
+    //   }
+    // });
     IngredientList.belongsTo(db.Ingredient, {
       foreignKey: {
         name: 'ingredientId',
