@@ -5,7 +5,7 @@ const { User } = require('../models/');
 module.exports = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    console.log(authorization);
+    // console.log(authorization);
     if (!authorization || !authorization.startsWith('Bearer')) {
       throw new AppError('unauthenticated1', 401);
     }
@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
       where: { id: payload.id },
       attributes: { exclude: 'password' }
     });
-    console.log('****************', user);
+    // console.log('****************', user);
     if (!user) {
       throw new AppError('unauthenticated3', 401);
     }

@@ -1,12 +1,13 @@
 const fs = require('fs');
 const AppError = require('../utils/appError');
-const { Menu } = require('../models');
+const { Menu, Cart } = require('../models');
 const cloudinary = require('../utils/cloudinary');
+const { Op } = require('sequelize');
 
 exports.postMenu = async (req, res, next) => {
   try {
     const { name, price, description } = req.body;
-    console.log(req.file);
+    // console.log(req.file);
 
     if (!name || !name.trim()) {
       throw new AppError('name is required');
@@ -26,7 +27,7 @@ exports.postMenu = async (req, res, next) => {
     if (req.file) {
       // console.log(req.file);
       imagePath = await cloudinary.upload(req.file.path);
-      const removeFileFromMac = fs.unlinkSync(req.file.path); //  ลบไฟล์ออกจากเครื่องหลังอัพโหลดเข้า cloudinary
+      fs.unlinkSync(req.file.path); //  ลบไฟล์ออกจากเครื่องหลังอัพโหลดเข้า cloudinary
     }
 
     const menu = await Menu.create({
@@ -43,8 +44,29 @@ exports.postMenu = async (req, res, next) => {
 
 exports.getMenu = async (req, res, next) => {
   try {
-    const menuItems = await Menu.findAll();
-    res.status(200).json({ menuItems });
+    if (req?.user) {
+      const findCartItems = await Cart.findAll({
+        where: {
+          userId: req.user.id
+        }
+      });
+
+      const newCartItems = JSON.parse(JSON.stringify(findCartItems)).map(
+        (el) => el.menuId
+      );
+
+      const menuItems = await Menu.findAll({
+        where: {
+          id: { [Op.notIn]: newCartItems }
+        }
+      });
+
+      // const filteredMenu = JSON.parse(JSON.stringify(menuItems)).filter(
+      //   (el) => el.id === JSON.parse(JSON.stringify(findCartItems)).menuId
+      // );
+      console.log(menuItems);
+      res.status(200).json({ menuItems });
+    }
   } catch (err) {
     next(err);
   }
@@ -65,7 +87,7 @@ exports.editMenu = async (req, res, next) => {
   try {
     const { name, description, price } = req.body;
     const { id } = req.params;
-    console.log('kuy sus');
+    // console.log('eiei');
     const updated = {};
 
     if (name) {
@@ -81,10 +103,10 @@ exports.editMenu = async (req, res, next) => {
     }
 
     let imagePath;
-    console.log(req.file);
+    // console.log(req.file);
     if (req.file) {
       imagePath = await cloudinary.upload(req.file.path);
-      console.log(imagePath);
+      // console.log(imagePath);
       const removeFileFromMac = fs.unlinkSync(req.file.path);
     }
 

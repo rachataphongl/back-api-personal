@@ -5,7 +5,9 @@ const morgan = require('morgan');
 
 const authRoute = require('./routes/authRoute');
 const postRoute = require('./routes/postRoute');
+const cartRoute = require('./routes/cartRoute');
 const error = require('./middlewares/error');
+const authenticate = require('./middlewares/authenticate');
 
 // const { sequelize } = require('./models');
 // sequelize.sync({ alter: true });
@@ -19,7 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/auth', authRoute);
-app.use('/posts', postRoute);
+app.use('/posts', authenticate, postRoute);
+
+app.use('/', authenticate, cartRoute);
 
 app.use(error);
 
