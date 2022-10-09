@@ -45,6 +45,7 @@ exports.getCart = async (req, res, next) => {
       where: { userId: req.user.id },
       include: Menu
     });
+
     res.status(201).json({ items });
   } catch (err) {
     next(err);

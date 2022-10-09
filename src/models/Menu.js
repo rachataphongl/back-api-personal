@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: {
         name: 'menuId',
         allowNull: false
-      }
+      },
+      onDelete: 'CASCADE'
     });
 
     // Menu.belongsTo(db.IngredientList, {
