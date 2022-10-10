@@ -3,7 +3,7 @@ const AppError = require('../utils/appError');
 
 exports.createCart = async (req, res, next) => {
   try {
-    const { menuId } = req.body;
+    const { menuId, amount } = req.body;
     // const { id } = req.params;
 
     const userId = req.user.id;
@@ -19,7 +19,7 @@ exports.createCart = async (req, res, next) => {
     const item = {
       userId,
       menuId,
-      amount: 1
+      amount
     };
 
     const createCartFromUser = await Cart.create(item);
@@ -51,3 +51,45 @@ exports.getCart = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateAmountCart = async (req, res, next) => {
+  try {
+    const { cartId, amount } = req.body;
+    const userId = req.user.id;
+
+    const cartValidate = await Cart.findOne({ where: { id: cartId } });
+    if (cartValidate.userId !== userId) {
+      throw new AppError('You are unauthorized');
+    }
+
+    const cart = await Cart.update(
+      { amount: +amount },
+      { where: { id: cartId } }
+    );
+
+    res.status(200).json({ cart });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// exports.decreaseAmountCart = async (req, res, next) => {
+//   try {
+//     const { cartId, amount } = req.body;
+//     const userId = req.user.id;
+
+//     const cartValidate = await Cart.findOne({ where: { id: cartId } });
+//     if (cartValidate.userId !== userId) {
+//       throw new AppError('You are unauthorized');
+//     }
+
+//     const cart = await Cart.update(
+//       { amount: +amount - 1 },
+//       { where: { userId, id: cartId } }
+//     );
+
+//     res.status(200).json({ cart });
+//   } catch (err) {
+//     next(err);
+//   }
+// };

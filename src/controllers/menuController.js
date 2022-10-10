@@ -112,9 +112,11 @@ exports.editMenu = async (req, res, next) => {
 
     if (imagePath) {
       updated.imagePath = imagePath;
+      await Menu.update(updated, { where: { id } });
+    } else {
+      await Menu.update(updated, { where: { id } });
     }
-
-    await Menu.update(updated, { where: { id } });
+    console.log(updated, '**********************');
     // const trueItemUpdated = await Menu.findOne({ where: { id } });
     // console.log(trueItemUpdated, 'KUY MAE YEF');
     // console.log(itemUpdate);
