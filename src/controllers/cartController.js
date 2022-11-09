@@ -11,7 +11,7 @@ exports.createCart = async (req, res, next) => {
     const cart = await Cart.findOne({
       where: { userId, menuId }
     });
-    console.log(cart);
+    // console.log(cart);
     if (cart) {
       throw new AppError('already have this item in cart', 400);
     }
@@ -73,23 +73,22 @@ exports.updateAmountCart = async (req, res, next) => {
   }
 };
 
-// exports.decreaseAmountCart = async (req, res, next) => {
-//   try {
-//     const { cartId, amount } = req.body;
-//     const userId = req.user.id;
+exports.clearCart = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    await Cart.destroy({ where: { userId } });
+    res.status(201).json('clear success');
+  } catch (err) {
+    next(err);
+  }
+};
 
-//     const cartValidate = await Cart.findOne({ where: { id: cartId } });
-//     if (cartValidate.userId !== userId) {
-//       throw new AppError('You are unauthorized');
-//     }
-
-//     const cart = await Cart.update(
-//       { amount: +amount - 1 },
-//       { where: { userId, id: cartId } }
-//     );
-
-//     res.status(200).json({ cart });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+exports.getCartByUserId = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const cartUser = await Cart.findAll({ where: { userId }, include: Menu });
+    res.status(201).json({ cartUser });
+  } catch (err) {
+    next(err);
+  }
+};
